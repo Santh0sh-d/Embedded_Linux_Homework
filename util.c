@@ -74,3 +74,39 @@ void readFromSocket(int port, int sockfd, char *dataFromPort)
 
     strncpy(dataFromPort, lastValue, SIZE);
 }
+
+int sendToServer(int clientfd, uint16_t opts, uint16_t obj, uint16_t prop, uint16_t value)
+{
+    struct sockaddr_in serverAddr;
+    // Initialize server address
+    memset(&serverAddr, 0, sizeof(serverAddr));
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(4000);
+
+    Msg_t *msg;
+    msg = (Msg_t*) malloc(sizeof(Msg_t));
+    if (msg == NULL)
+    {
+       perror("Error allocating memory");
+       return -1;
+    }
+    msg->operation = opts;
+    msg->object  = obj;
+    msg->property = prop;
+    msg->value = value;
+    printf("opts = %d\tobj= %d\tprop = %d\n",msg->operation, msg->object, msg->property);
+
+    size_t bytes_sent = sendto(clientfd, msg, sizeof(msg), 0, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
+    if (bytes_sent == -1)
+    {
+       perror("Error sending data");
+       free(msg);
+       return -1;
+    }
+
+    //Free the memory
+    free(msg);
+
+    return 0;
+}
+

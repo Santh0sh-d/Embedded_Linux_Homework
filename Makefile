@@ -2,23 +2,14 @@
 CC = gcc
 CFLAGS = -Wall
 
-# Source Files 
-SRCS = client1.c util.c
+#Default target to build client1 and client2 
+all: client1 client2
 
-#Object Files
-OBJS = $(SRCS:.c=.o)
+client1: client1.c util.c
+	$(CC) $(CFLAGS) -o $@ $^
 
-#Target exe
-TARGET = client1
-
-all: $(TARGET)
-
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $(OBJS)
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< 
+client2: client2.c util.c
+	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
-#	rm -f client2 *.o
-	rm -f $(OBJS) $(TARGET)	
+	rm -f client1 client2
