@@ -90,11 +90,10 @@ int sendToServer(int clientfd, uint16_t opts, uint16_t obj, uint16_t prop, uint1
        perror("Error allocating memory");
        return -1;
     }
-    msg->operation = opts;
-    msg->object  = obj;
-    msg->property = prop;
-    msg->value = value;
-    printf("opts = %d\tobj= %d\tprop = %d\n",msg->operation, msg->object, msg->property);
+    msg->operation = htons(opts);
+    msg->object  = htons(obj);
+    msg->property = htons(prop);
+    msg->value = htons(value);
 
     size_t bytes_sent = sendto(clientfd, msg, sizeof(msg), 0, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
     if (bytes_sent == -1)
